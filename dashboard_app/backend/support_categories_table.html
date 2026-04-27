@@ -1,0 +1,250 @@
+
+<style>
+  .wrap { padding: 1rem 0; overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; min-width: 900px; font-size: 12.5px; }
+  thead th {
+    background: var(--color-background-secondary);
+    color: var(--color-text-primary);
+    font-weight: 500;
+    font-size: 13px;
+    padding: 10px 10px;
+    border: 0.5px solid var(--color-border-secondary);
+    text-align: left;
+    white-space: nowrap;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+  thead th .cat-num {
+    display: block;
+    font-size: 10px;
+    font-weight: 400;
+    color: var(--color-text-tertiary);
+    margin-bottom: 2px;
+  }
+  tbody td {
+    padding: 6px 10px;
+    border: 0.5px solid var(--color-border-tertiary);
+    color: var(--color-text-primary);
+    vertical-align: top;
+    min-width: 120px;
+  }
+  tbody tr:nth-child(even) td { background: var(--color-background-secondary); }
+  tbody tr:hover td { background: var(--color-background-info); }
+  .code {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    margin-right: 4px;
+    min-width: 28px;
+  }
+  .empty { color: var(--color-text-tertiary); }
+</style>
+<div class="wrap">
+<h2 class="sr-only">Support category taxonomy table with 9 columns and up to 17 rows</h2>
+<table>
+<thead>
+<tr>
+  <th><span class="cat-num">0.x</span>Others</th>
+  <th><span class="cat-num">1.x</span>Account Management</th>
+  <th><span class="cat-num">2.x</span>User Management</th>
+  <th><span class="cat-num">3.x</span>Application Management</th>
+  <th><span class="cat-num">4.x</span>Device Management</th>
+  <th><span class="cat-num">5.x</span>Subscription Management</th>
+  <th><span class="cat-num">6.x</span>UI Issue</th>
+  <th><span class="cat-num">7.x</span>Global Trade</th>
+  <th><span class="cat-num">8.x</span>Local Gateway</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><span class="code">0.1</span>Others</td>
+  <td><span class="code">1.1</span>Account Deletion</td>
+  <td><span class="code">2.1</span>Access Denied</td>
+  <td><span class="code">3.1</span>Unable to add region</td>
+  <td><span class="code">4.1</span>Device model mis-match</td>
+  <td><span class="code">5.1</span>License Extension</td>
+  <td><span class="code">6.1</span>UI Error</td>
+  <td><span class="code">7.1</span>Workspace creation, editing, access error</td>
+  <td><span class="code">8.1</span>Unable to access or download OVA</td>
+</tr>
+<tr>
+  <td><span class="code">0.2</span>Test Case</td>
+  <td><span class="code">1.2</span>Action Not Permitted / Account Blocked</td>
+  <td><span class="code">2.2</span>Delete MFA</td>
+  <td><span class="code">3.2</span>Unable to remove region</td>
+  <td><span class="code">4.2</span>Product number mis-match</td>
+  <td><span class="code">5.2</span>Mapping subscription key</td>
+  <td class="empty">—</td>
+  <td><span class="code">7.2</span>Application / Patch / Firmware issue</td>
+  <td><span class="code">8.2</span>Registration Token missing or mismatch</td>
+</tr>
+<tr>
+  <td><span class="code">0.3</span>Invalid / Incorrect URL</td>
+  <td><span class="code">1.3</span>Edit account details</td>
+  <td><span class="code">2.3</span>Delete user</td>
+  <td><span class="code">3.3</span>Export data failure</td>
+  <td><span class="code">4.3</span>Unable to assign device</td>
+  <td><span class="code">5.3</span>Requires subscription key</td>
+  <td class="empty">—</td>
+  <td><span class="code">7.3</span>Activation, Register, Logs, Heartbeat failure</td>
+  <td><span class="code">8.3</span>Local gateway GTC service error</td>
+</tr>
+<tr>
+  <td><span class="code">0.4</span>Site Under Maintenance</td>
+  <td><span class="code">1.4</span>IP configured incorrectly</td>
+  <td><span class="code">2.4</span>Incorrect user ID</td>
+  <td><span class="code">3.4</span>Missing information in dashboard</td>
+  <td><span class="code">4.4</span>Unable to create tags</td>
+  <td><span class="code">5.4</span>Unable to add subscription key</td>
+  <td class="empty">—</td>
+  <td><span class="code">7.4</span>Outage, Maintenance</td>
+  <td><span class="code">8.4</span>Install / Configuration / Registration error</td>
+</tr>
+<tr>
+  <td><span class="code">0.5</span>Enhancement</td>
+  <td><span class="code">1.5</span>Merge accounts</td>
+  <td><span class="code">2.5</span>No access to Greenlake central</td>
+  <td class="empty">—</td>
+  <td><span class="code">4.5</span>Unable to export devices</td>
+  <td><span class="code">5.5</span>Subscription Transfer</td>
+  <td class="empty">—</td>
+  <td><span class="code">7.5</span>Others</td>
+  <td><span class="code">8.5</span>Unable to access local gateway VM</td>
+</tr>
+<tr>
+  <td><span class="code">0.6</span>System time issue</td>
+  <td><span class="code">1.6</span>No business account</td>
+  <td><span class="code">2.6</span>No Roles Assigned</td>
+  <td class="empty">—</td>
+  <td><span class="code">4.6</span>Unable to initialize device</td>
+  <td class="empty">—</td>
+  <td class="empty">—</td>
+  <td><span class="code">7.6</span>Address</td>
+  <td><span class="code">8.6</span>Local gateway VM connection failure</td>
+</tr>
+<tr>
+  <td><span class="code">0.7</span>Browser issue</td>
+  <td><span class="code">1.7</span>Not part of business account</td>
+  <td><span class="code">2.7</span>Activate role not available</td>
+  <td class="empty">—</td>
+  <td><span class="code">4.7</span>Unable to onboard device</td>
+  <td class="empty">—</td>
+  <td class="empty">—</td>
+  <td class="empty">—</td>
+  <td><span class="code">8.7</span>Device connection failure</td>
+</tr>
+<tr>
+  <td><span class="code">0.8</span>Network Issue</td>
+  <td><span class="code">1.8</span>SSO / SAML Configuration</td>
+  <td><span class="code">2.8</span>Unable to access Aruba central</td>
+  <td class="empty">—</td>
+  <td><span class="code">4.8</span>Unable to setup device</td>
+  <td class="empty">—</td>
+  <td class="empty">—</td>
+  <td class="empty">—</td>
+  <td><span class="code">8.8</span>UI Error</td>
+</tr>
+<tr>
+  <td><span class="code">0.9</span>General query</td>
+  <td><span class="code">1.9</span>Unable to access business account</td>
+  <td><span class="code">2.9</span>Unable to invite user</td>
+  <td class="empty">—</td>
+  <td><span class="code">4.9</span>Unable to view tags</td>
+  <td class="empty">—</td>
+  <td class="empty">—</td>
+  <td class="empty">—</td>
+  <td class="empty">—</td>
+</tr>
+<tr>
+  <td><span class="code">0.10</span>Misroute</td>
+  <td><span class="code">1.10</span>Unable to create account</td>
+  <td><span class="code">2.10</span>Unable to login to partner portal</td>
+  <td class="empty">—</td>
+  <td><span class="code">4.10</span>Fail Prov No Rule</td>
+  <td class="empty">—</td>
+  <td class="empty">—</td>
+  <td class="empty">—</td>
+  <td class="empty">—</td>
+</tr>
+<tr>
+  <td><span class="code">0.11</span>Application Issue</td>
+  <td><span class="code">1.11</span>Tenant sync issue</td>
+  <td><span class="code">2.11</span>Unable to login to platform</td>
+  <td class="empty">—</td>
+  <td><span class="code">4.11</span>Unknown devices</td>
+  <td class="empty">—</td>
+  <td class="empty">—</td>
+  <td class="empty">—</td>
+  <td class="empty">—</td>
+</tr>
+<tr>
+  <td><span class="code">0.12</span>New User to Platform</td>
+  <td class="empty">—</td>
+  <td><span class="code">2.12</span>Unable to reset password</td>
+  <td class="empty">—</td>
+  <td><span class="code">4.12</span>Location mapping failure</td>
+  <td class="empty">—</td>
+  <td class="empty">—</td>
+  <td class="empty">—</td>
+  <td class="empty">—</td>
+</tr>
+<tr>
+  <td class="empty">—</td>
+  <td class="empty">—</td>
+  <td><span class="code">2.13</span>User sync issue</td>
+  <td class="empty">—</td>
+  <td><span class="code">4.13</span>Error creating / editing SDI</td>
+  <td class="empty">—</td>
+  <td class="empty">—</td>
+  <td class="empty">—</td>
+  <td class="empty">—</td>
+</tr>
+<tr>
+  <td class="empty">—</td>
+  <td class="empty">—</td>
+  <td><span class="code">2.14</span>Unable to access tenant</td>
+  <td class="empty">—</td>
+  <td><span class="code">4.14</span>Auto case creation failure</td>
+  <td class="empty">—</td>
+  <td class="empty">—</td>
+  <td class="empty">—</td>
+  <td class="empty">—</td>
+</tr>
+<tr>
+  <td class="empty">—</td>
+  <td class="empty">—</td>
+  <td><span class="code">2.15</span>Invalid / Forgot Password</td>
+  <td class="empty">—</td>
+  <td><span class="code">4.15</span>ACC email notification failure / missing data</td>
+  <td class="empty">—</td>
+  <td class="empty">—</td>
+  <td class="empty">—</td>
+  <td class="empty">—</td>
+</tr>
+<tr>
+  <td class="empty">—</td>
+  <td class="empty">—</td>
+  <td><span class="code">2.16</span>GLCS</td>
+  <td class="empty">—</td>
+  <td><span class="code">4.16</span>Auto case not accessible or visible in HPESC</td>
+  <td class="empty">—</td>
+  <td class="empty">—</td>
+  <td class="empty">—</td>
+  <td class="empty">—</td>
+</tr>
+<tr>
+  <td class="empty">—</td>
+  <td class="empty">—</td>
+  <td><span class="code">2.17</span>New User Registration</td>
+  <td class="empty">—</td>
+  <td><span class="code">4.17</span>Cannot disable auto case creation</td>
+  <td class="empty">—</td>
+  <td class="empty">—</td>
+  <td class="empty">—</td>
+  <td class="empty">—</td>
+</tr>
+</tbody>
+</table>
+</div>

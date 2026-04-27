@@ -1,0 +1,31 @@
+version: "3.9"
+
+services:
+  case-insights:
+    build:
+      context: .               # project root — Dockerfile references dashboard_app/
+      dockerfile: Dockerfile
+    container_name: case-insights
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PYTHONDONTWRITEBYTECODE=1
+      # Uncomment to avoid HuggingFace rate limits:
+      # - HF_TOKEN=hf_your_token_here
+    volumes:
+      # BERT fine-tuned model persists between restarts (named volume)
+      - bert_model:/app/backend/bert_model
+      # Human feedback corrections (bind mount — editable on host)
+      - ./data/feedback.json:/app/backend/feedback.json
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 90s
+
+volumes:
+  bert_model:
+    driver: local

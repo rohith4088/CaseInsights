@@ -1,0 +1,44 @@
+# ===========================
+# Large Model & Data Files
+# ===========================
+*.safetensors
+*.pkl
+*.xlsx
+*.csv
+
+# ===========================
+# Python Cache & Compiled
+# ===========================
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# ===========================
+# Virtual Environments
+# ===========================
+venv/
+.venv/
+env/
+.env/
+
+# ===========================
+# Mac System Files
+# ===========================
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# ===========================
+# Docker
+# ===========================
+*.log
+
+# ===========================
+# IDE & Editor
+# ===========================
+.vscode/
+.idea/
+*.swp
+*.swo

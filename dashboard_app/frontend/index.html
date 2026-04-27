@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeuroSight — AI Issue Analytics</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app-container">
+    <!-- Sidebar -->
+    <nav class="sidebar glass-panel">
+        <div class="logo">
+            <div class="logo-icon"></div>
+            <h2>Case Insights</h2>
+        </div>
+        <ul class="nav-links">
+            <li class="active"><a href="#">Dashboard</a></li>
+            <li><a href="#analytics-section">Analytics</a></li>
+            <li><a href="#resolution-section">Resolution</a></li>
+            <li><a href="#benchmark-section">Benchmark</a></li>
+            <li><a href="#table-section">Cases</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <div id="sidebar-accuracy" style="display:none;">
+                <p style="font-size:11px;color:var(--text-secondary)">AI Accuracy</p>
+                <div id="sidebar-acc-val" style="font-size:22px;font-weight:700;color:var(--success)">—</div>
+            </div>
+            <div id="sidebar-feedback" style="display:none;margin-top:12px;">
+                <p style="font-size:11px;color:var(--text-secondary)">Active Learning</p>
+                <div id="sidebar-fb-val" style="font-size:18px;font-weight:700;color:#a5b4fc;">0 corrections</div>
+                <button class="btn-secondary" style="margin-top:6px;width:100%;font-size:11px;" onclick="forceRetrain()">⚡ Retrain Now</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main -->
+    <main class="main-content">
+        <header class="top-bar">
+            <div class="header-titles">
+                <h1>Issue Analytics Dashboard</h1>
+                <p>4-Tier AI Categorization · Click charts to filter · Click rows for details</p>
+            </div>
+        </header>
+
+        <div class="content-scroll">
+            <!-- Upload -->
+            <section class="upload-section glass-panel" id="upload-zone">
+                <div class="upload-content">
+                    <svg class="upload-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                    </svg>
+                    <h3>Drag & Drop your dataset here</h3>
+                    <p>Supports .xlsx and .csv · AI trains on your labeled data</p>
+                    <input type="file" id="file-input" accept=".xlsx,.csv" class="file-input">
+                    <button class="btn-primary" onclick="document.getElementById('file-input').click()">Browse Files</button>
+                </div>
+                <div class="loading-overlay" id="loading-overlay" style="display:none;">
+                    <div class="spinner"></div>
+                    <p id="loading-msg">Training AI on your data...</p>
+                </div>
+            </section>
+
+            <!-- Stats -->
+            <section class="stats-grid" id="stats-grid" style="display:none;">
+                <div class="stat-card glass-panel">
+                    <h3>Total Cases</h3>
+                    <div class="stat-value" id="stat-total">0</div>
+                </div>
+                <div class="stat-card glass-panel">
+                    <h3>AI Accuracy</h3>
+                    <div class="stat-value text-green" id="stat-accuracy">—</div>
+                </div>
+                <div class="stat-card glass-panel">
+                    <h3>High Confidence ≥80%</h3>
+                    <div class="stat-value text-green" id="stat-high">0</div>
+                </div>
+                <div class="stat-card glass-panel">
+                    <h3>Needs Review &lt;50%</h3>
+                    <div class="stat-value text-red" id="stat-low">0</div>
+                </div>
+            </section>
+
+            <!-- BERT Engine Panel -->
+            <section class="bert-panel glass-panel" id="bert-panel" style="display:none;">
+                <div class="bert-left">
+                    <div class="bert-title">
+                        <span class="bert-icon">🧠</span>
+                        <div>
+                            <h3>Deep AI Engine — DistilBERT</h3>
+                            <p>Fine-tune a BERT transformer on your data for +15–25% higher accuracy. Runs locally, no data leaves your machine.</p>
+                        </div>
+                    </div>
+                    <div class="bert-meta">
+                        <span class="badge badge-medium" id="bert-device-badge">CPU</span>
+                        <span class="badge" id="bert-status-badge" style="background:rgba(255,255,255,.08);color:#94a3b8;">Not Trained</span>
+                        <span id="bert-loss-badge" style="display:none;" class="badge badge-reviewed">Loss: —</span>
+                    </div>
+                </div>
+                <div class="bert-right">
+                    <!-- Progress bar (shown during training) -->
+                    <div id="bert-progress-wrap" style="display:none;">
+                        <div class="bert-progress-label">
+                            <span id="bert-progress-text">Training... Epoch 1/3</span>
+                            <span id="bert-progress-pct">0%</span>
+                        </div>
+                        <div class="bert-progress-track">
+                            <div class="bert-progress-bar" id="bert-progress-bar"></div>
+                        </div>
+                    </div>
+                    <!-- Action buttons -->
+                    <div class="bert-actions">
+                        <button class="btn-primary" id="bert-train-btn" onclick="startBERTTraining()">⚡ Train BERT on this data</button>
+                        <button class="btn-primary" id="bert-apply-btn" style="display:none;background:linear-gradient(135deg,#10b981,#059669);" onclick="applyBERTPredictions()">✓ Apply BERT Predictions</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- BERT Diff Panel (shown after applying BERT) -->
+            <section class="glass-panel bert-diff-panel" id="bert-diff-panel" style="display:none;">
+                <div class="bert-diff-header">
+                    <div>
+                        <h3>🔄 What Changed: LinearSVC → DistilBERT</h3>
+                        <p style="margin-top:4px;">Cases where BERT disagreed with the fast model prediction.</p>
+                    </div>
+                    <div style="display:flex;gap:10px;align-items:center;">
+                        <input type="text" id="diff-search" placeholder="Search changed cases..." class="search-input" style="width:200px;">
+                        <button class="btn-secondary" onclick="exportDiff()">⬇ Export Changes</button>
+                        <button class="btn-secondary" onclick="document.getElementById('bert-diff-panel').style.display='none'">✕</button>
+                    </div>
+                </div>
+
+                <!-- Summary stats -->
+                <div class="diff-stats" id="diff-stats"></div>
+
+                <!-- Category flow: what moved where -->
+                <div id="diff-flow-section">
+                    <h4 style="margin:16px 0 10px;font-size:14px;color:var(--text-secondary);">Category Shifts (top movers)</h4>
+                    <div class="diff-flow-grid" id="diff-flow-grid"></div>
+                </div>
+
+                <!-- Case-level diff table -->
+                <h4 style="margin:18px 0 10px;font-size:14px;color:var(--text-secondary);">Changed Cases <span id="diff-count" class="row-count"></span></h4>
+                <div class="table-wrapper" style="max-height:360px;overflow-y:auto;">
+                    <table id="diff-table">
+                        <thead><tr>
+                            <th>Case #</th>
+                            <th>Subject</th>
+                            <th>LinearSVC Prediction</th>
+                            <th>BERT Prediction</th>
+                            <th>Confidence Δ</th>
+                            <th>Action</th>
+                        </tr></thead>
+                        <tbody id="diff-tbody"></tbody>
+                    </table>
+                </div>
+                <div id="diff-pagination" class="pagination-row"></div>
+            </section>
+
+            <!-- Charts -->
+            <section class="charts-section" id="charts-section" style="display:none;">
+                <div class="chart-container glass-panel">
+                    <h3>Main Category Distribution <span class="hint">↖ click to filter</span></h3>
+                    <canvas id="pieChart"></canvas>
+                </div>
+                <div class="chart-container glass-panel">
+                    <h3>Top 10 Subcategories <span class="hint">↖ click to filter</span></h3>
+                    <canvas id="barChart"></canvas>
+                </div>
+            </section>
+
+            <!-- Analytics -->
+            <section class="analytics-section" id="analytics-section" style="display:none;">
+                <div class="chart-container glass-panel wide">
+                    <h3>Case Volume Over Time <span class="hint">(top 5 categories · MoM changes shown in stats)</span></h3>
+                    <canvas id="trendChart"></canvas>
+                </div>
+                <div class="chart-container glass-panel">
+                    <h3>Severity Breakdown by Category</h3>
+                    <canvas id="severityChart"></canvas>
+                </div>
+            </section>
+
+            <!-- MoM Trend Snapshot -->
+            <section class="glass-panel mom-section" id="mom-section" style="display:none;">
+                <h3>📈 Month-over-Month Category Trends</h3>
+                <p class="hint" style="margin-bottom:14px;">Comparing last 2 months of data. Green = growing, Red = declining.</p>
+                <div id="mom-grid" class="mom-grid"></div>
+            </section>
+
+            <!-- Resolution Time -->
+            <section class="glass-panel" id="resolution-section" style="display:none;padding:20px 24px;">
+                <h3>⏱ Avg Resolution Time by Category <span class="hint">(days to close)</span></h3>
+                <div style="height:320px;margin-top:12px;">
+                    <canvas id="resolutionChart"></canvas>
+                </div>
+            </section>
+
+            <!-- Agent Leaderboard -->
+            <section class="leaderboard-section glass-panel" id="leaderboard-section" style="display:none;">
+                <h3>👤 Top Case Owners</h3>
+                <div class="table-wrapper">
+                    <table id="agent-table">
+                        <thead><tr><th>#</th><th>Agent</th><th>Cases</th><th>Top Category</th></tr></thead>
+                        <tbody id="agent-tbody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Benchmark -->
+            <section class="benchmark-section glass-panel" id="benchmark-section" style="display:none;">
+                <h3>🎯 AI Benchmark Validation</h3>
+                <p style="margin-bottom:20px;">Comparing AI predictions against human-labeled <code>Other Issue Category Description</code>.</p>
+                <div class="bench-stats">
+                    <div class="bench-stat"><div class="bench-label">Accuracy</div><div class="bench-value text-green" id="bench-accuracy">—</div></div>
+                    <div class="bench-stat"><div class="bench-label">Correct</div><div class="bench-value text-green" id="bench-correct">—</div></div>
+                    <div class="bench-stat"><div class="bench-label">Incorrect</div><div class="bench-value text-red" id="bench-wrong">—</div></div>
+                    <div class="bench-stat"><div class="bench-label">Evaluated</div><div class="bench-value" id="bench-total">—</div></div>
+                </div>
+                <!-- Mismatch Table -->
+                <div class="mismatch-header">
+                    <h4>Low-Confidence Mismatches <span id="mismatch-count" class="row-count"></span></h4>
+                    <div class="mismatch-controls">
+                        <input type="text" id="mismatch-search" placeholder="Filter subject or category..." class="search-input" style="width:210px;">
+                        <select id="mismatch-conf-filter" class="override-select" style="width:155px;">
+                            <option value="all">All Confidences</option>
+                            <option value="0-25">0–25% (Critical)</option>
+                            <option value="25-50">25–50% (Low)</option>
+                            <option value="50-75">50–75% (Medium)</option>
+                            <option value="75-100">75–100% (High)</option>
+                        </select>
+                        <button class="btn-secondary" onclick="exportMismatches()">⬇ Export</button>
+                    </div>
+                </div>
+                <div class="table-wrapper" style="max-height:380px;overflow-y:auto;">
+                    <table id="mismatch-table">
+                        <thead><tr>
+                            <th class="sortable" data-col="case_number">Case # <span class="sort-icon">⇅</span></th>
+                            <th class="sortable" data-col="subject">Subject <span class="sort-icon">⇅</span></th>
+                            <th class="sortable" data-col="severity">Sev <span class="sort-icon">⇅</span></th>
+                            <th class="sortable" data-col="actual">Actual Label <span class="sort-icon">⇅</span></th>
+                            <th class="sortable" data-col="predicted">AI Predicted <span class="sort-icon">⇅</span></th>
+                            <th class="sortable" data-col="confidence_pct">Confidence ↑ <span class="sort-icon">⇅</span></th>
+                            <th>Action</th>
+                        </tr></thead>
+                        <tbody id="mismatch-tbody"></tbody>
+                    </table>
+                </div>
+                <div id="mismatch-pagination" class="pagination-row"></div>
+            </section>
+
+            <!-- Case Table -->
+            <section class="table-section glass-panel" id="table-section" style="display:none;">
+                <div class="table-header">
+                    <h3 id="table-title">Categorized Cases</h3>
+                    <div class="table-actions">
+                        <span id="table-row-count" class="row-count"></span>
+                        <input type="text" id="search-input" placeholder="Search cases..." class="search-input">
+                        <button class="btn-secondary" id="clear-filter-btn" style="display:none;" onclick="clearFilter()">✕ Clear Filter</button>
+                        <button class="btn-secondary" onclick="exportCSV()">⬇ Export CSV</button>
+                    </div>
+                </div>
+                <div class="table-wrapper">
+                    <table id="data-table">
+                        <thead><tr>
+                            <th>Case #</th><th>Subject</th><th>Severity</th>
+                            <th>Main Category</th><th>Predicted Subcategory</th>
+                            <th>Confidence</th><th>Agent</th>
+                        </tr></thead>
+                        <tbody id="table-body"></tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </main>
+</div>
+
+<!-- Case Detail Modal -->
+<div class="modal-overlay" id="modal-overlay" style="display:none;" onclick="closeModal(event)">
+    <div class="modal-panel glass-panel" id="modal-panel">
+        <div class="modal-header">
+            <h3 id="modal-title">Case Details</h3>
+            <button class="modal-close" onclick="closeModal()">✕</button>
+        </div>
+        <div class="modal-body" id="modal-body"></div>
+        <div class="modal-footer">
+            <div class="override-row">
+                <label>Override Category:</label>
+                <select id="override-select" class="override-select"></select>
+                <button class="btn-primary" onclick="submitFeedback()">✓ Submit Correction</button>
+            </div>
+            <div id="feedback-msg" style="display:none;" class="feedback-msg">✓ Correction saved!</div>
+        </div>
+    </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
